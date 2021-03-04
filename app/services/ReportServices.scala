@@ -134,7 +134,7 @@ object ReportServices{
         marshaller(lines)
       }.recoverWith{
         case e: Throwable =>
-          logger.error(s"invalid file or bad data structure: ${e.getLocalizedMessage}")
+          logger.error(s"invalid file or bad data structure: ${e.getMessage} -- caused by: ${e.getCause}")
           Failure(e)
       }
     }else {
