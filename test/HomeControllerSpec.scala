@@ -24,7 +24,7 @@ class HomeControllerSpec extends PlaySpec with GuiceOneAppPerSuite {
 
   "HomeController GET /" should {
     "be valid and return valid response" in {
-      val resp = controller.index().apply(FakeRequest(GET, "/"))
+      val resp = controller.index().apply(FakeRequest(GET, "/").withCSRFToken)
       status(resp) mustBe OK
       contentType(resp) mustBe Some("text/html")
       contentAsString(resp) must include("Percentual distribution of available cars by Make")

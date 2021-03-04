@@ -50,6 +50,16 @@ class HomeControllerIntergrationSpec extends PlaySpec with GuiceOneServerPerSuit
     }
   }
 
+  "HomeController GET /api" should {
+    "get report in json format" in  {
+      val url = s"http://localhost:${port}/api"
+      val home = inject[WSClient].url(url).get()
+      val resp = await(home)
+      resp.status mustBe OK
+      resp.contentType mustBe "application/json"
+    }
+  }
+
   def postSource(tmpFile: File): Source[MultipartFormData.Part[Source[ByteString, _]], _] = {
     import play.api.mvc.MultipartFormData._
     Source(FilePart("report", "contacts.csv", Option("text/csv"),
