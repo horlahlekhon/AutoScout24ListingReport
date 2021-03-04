@@ -1,7 +1,4 @@
-@import java.time.Month
-
 @import services.Listing
-@import play.api.i18n.Messages.implicitMessagesProviderToMessages
 @(mostListingsByContacts: Map[java.time.LocalDate, Seq[(Listing, Int)]], avgListingsPricePerSeller: Map[String, Double], percentageDistroOfCarsByMake: Map[String, Int], avgTopMostContactedListing: Double, form: Form[FormData])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 <div>
@@ -47,7 +44,7 @@
         <thead>
             <tr>
                 <th class="mdl-data-table__cell--non-numeric">Car Make</th>
-                <th class="mdl-data-table__cell--non-numeric">Percentage in listing</th>
+                <th class="mdl-data-table__cell--non-numeric">Percentage of distribution</th>
             </tr>
         </thead>
         <tbody>
@@ -77,13 +74,17 @@
                 </tr>
             </thead>
             <tbody>
-            @for(((listing, contacts), index) <- listingAndContact.zipWithIndex){
+            @for(((listing, contacts), index) <- listingAndContact.zipWithIndex) {
                 <tr>
-                    <td class="mdl-data-table__cell--non-numeric">@{index + 1} </td>
+                    <td class="mdl-data-table__cell--non-numeric">@{
+                        index + 1
+                    } </td>
                     <td class="mdl-data-table__cell--non-numeric">@listing.id</td>
                     <td class="mdl-data-table__cell--non-numeric">@listing.make</td>
-                    <td class="mdl-data-table__cell--non-numeric">@listing.price</td>
-                    <td class="mdl-data-table__cell--non-numeric">@listing.mileage</td>
+                    <td class="mdl-data-table__cell--non-numeric">€ @listing.price</td>
+                    <td class="mdl-data-table__cell--non-numeric">@{
+                        listing.mileage
+                    } KM</td>
                     <td class="mdl-data-table__cell--non-numeric">@contacts</td>
                 </tr>
             }

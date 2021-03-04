@@ -1,15 +1,13 @@
 package services
 
 import java.io.File
-import java.time.{Instant, LocalDate, LocalDateTime, Month, ZoneOffset}
-import java.util.Date
+import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 
 import play.api.Logger
 import services.ReportServices.{contactsMarshaller, listingMarshaller, readResource}
 
-import scala.collection.immutable
 import scala.collection.immutable.ListMap
-import scala.io.{BufferedSource, Source}
+import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 sealed trait DataTypes
@@ -42,7 +40,6 @@ class ReportServices(reportsDir: String)(implicit logger: Logger) {
       value.asInstanceOf[Seq[Listing]]
   }
 
-  // create a typeclass that injects average to all lists of Int
   def avg(seq: Seq[Double]): Double = {
     val res = seq.sum / seq.length
     Try(BigDecimal(res).setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble)
@@ -98,7 +95,6 @@ class ReportServices(reportsDir: String)(implicit logger: Logger) {
 }
 object ReportServices{
 
-  // TODO come back and solve the erasure issue
   def validateFile(file: File)(implicit logger: Logger): (Try[Seq[DataTypes]], UploadFileEnums.Value) = {
     val maybeResource = readResource(file, contactsMarshaller)
     maybeResource match {
@@ -125,7 +121,6 @@ object ReportServices{
       listings.map{ listing =>
         Listing(listing(0).toInt, listing(1), listing(2).toInt, listing(3).toLong, listing(4))
       }
-
   }
 
   def readResource(file: File, marshaller: Seq[Array[String]] => Seq[DataTypes])(implicit logger: Logger): Try[Seq[DataTypes]] = {

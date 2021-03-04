@@ -1,6 +1,7 @@
 ### AutoScout24ListingReport
 
-This Uses a couple of csv files to generate a report which is available in tabular html format and JSON format
+This Uses a couple of csv files to generate a report which is available in tabular html format and JSON format.
+ the initial csv files can be put in a directory and the absolute path to the directory be set as env "REPORT_DIR".
 
 ##### Milestones
 
@@ -29,7 +30,9 @@ Run test:
 > `sbt test` this will run the tests
 
 Run Server:
+>  `export REPORT_DIR=/path/to/reportfiles`
 > `cd AutoScout24ListingReport`
 > `sbt run` this will start the server and listens at port 9000
 
       
+Thank you.
