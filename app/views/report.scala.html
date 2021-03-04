@@ -1,0 +1,96 @@
+@import java.time.Month
+
+@import services.Listing
+@import play.api.i18n.Messages.implicitMessagesProviderToMessages
+@(mostListingsByContacts: Map[java.time.LocalDate, Seq[(Listing, Int)]], avgListingsPricePerSeller: Map[String, Double], percentageDistroOfCarsByMake: Map[String, Int], avgTopMostContactedListing: Double, form: Form[FormData])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+
+<div>
+
+    @helper.form(action = helper.CSRF(routes.HomeController.uploadReportFile()),  'enctype -> "multipart/form-data") {
+        @helper.inputFile(form("report"))
+        @helper.CSRF.formField
+        <input type="submit" id="upload" value="upload report file"/>
+    }
+    @request.flash.data.map{ case (name, value) =>
+    <div style="color: red">@name: @value</div>
+    }
+</div>
+<div class="mdl-grid ml-20">
+    <div class="mdl-cell--12 col" >
+        <div id="img-report-summary">
+            <h3>Cars Listing reports</h3>
+
+            <h5>Average Listing Selling Price per Seller Type</h5>
+            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+                <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Seller type</th>
+                        <th class="mdl-data-table__cell--non-numeric">Average in Euro</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for((sellerType, avg) <- avgListingsPricePerSeller) {
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">@sellerType</td>
+                            <td class="mdl-data-table__cell--non-numeric">€ @avg</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div class="ml-20">
+    <h5>Percentual distribution of available cars by Make</h5>
+    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+        <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Car Make</th>
+                <th class="mdl-data-table__cell--non-numeric">Percentage in listing</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for((make, percentage) <- percentageDistroOfCarsByMake){
+            <tr>
+                <td class="mdl-data-table__cell--non-numeric">@make</td>
+                <td class="mdl-data-table__cell--non-numeric">@percentage%</td>
+            </tr>
+        }
+
+        </tbody>
+    </table>
+</div>
+<div class="ml-20">
+    <h5>The Top 5 most contacted listings per Month</h5>
+    @for((date, listingAndContact) <- mostListingsByContacts){
+        <h6>Month: @date.getMonthValue.@date.getYear</h6>
+        <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+            <thead>
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Ranking</th>
+                    <th class="mdl-data-table__cell--non-numeric">Listing Id</th>
+                    <th class="mdl-data-table__cell--non-numeric">Make</th>
+                    <th class="mdl-data-table__cell--non-numeric">Selling Price</th>
+                    <th class="mdl-data-table__cell--non-numeric">Mileage</th>
+                    <th class="mdl-data-table__cell--non-numeric">Total Amount of contacts</th>
+                </tr>
+            </thead>
+            <tbody>
+            @for(((listing, contacts), index) <- listingAndContact.zipWithIndex){
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">@{index + 1} </td>
+                    <td class="mdl-data-table__cell--non-numeric">@listing.id</td>
+                    <td class="mdl-data-table__cell--non-numeric">@listing.make</td>
+                    <td class="mdl-data-table__cell--non-numeric">@listing.price</td>
+                    <td class="mdl-data-table__cell--non-numeric">@listing.mileage</td>
+                    <td class="mdl-data-table__cell--non-numeric">@contacts</td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    }
+
+</div>
+
