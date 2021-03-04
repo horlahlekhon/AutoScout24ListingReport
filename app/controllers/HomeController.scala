@@ -27,7 +27,7 @@ class HomeController @Inject()(cc: MessagesControllerComponents, configuration: 
   implicit val logger = Logger(this.getClass)
 
   val reportDir = allCatch.opt(configuration.underlying.getString("reportDir"))
-  val form = Form(
+  val form: Form[FormData] = Form(
     mapping(
       "name" -> text
     )(FormData.apply)(FormData.unapply)
@@ -48,7 +48,7 @@ class HomeController @Inject()(cc: MessagesControllerComponents, configuration: 
           val avgListingsPricePerSeller = report.averageListingPricePerSellerType
           val percentageDistroOfCarsByMake = report.percentageDistroOfCarsByMake
           val avgTopMostContactedListingByprice = report.averagePriceMostContactedListing()
-          Ok(views.html.index("Your new application is ready.",
+          Ok(views.html.index("Welcome to Auto scout 24",
             mostListingsByContacts = mostListingsByContacts,
             avgListingsPricePerSeller = avgListingsPricePerSeller,
             percentageDistroOfCarsByMake = percentageDistroOfCarsByMake,
@@ -65,7 +65,7 @@ class HomeController @Inject()(cc: MessagesControllerComponents, configuration: 
 
   }
 
-  def api = Action { implicit request =>
+  def api: Action[AnyContent] = Action { implicit request =>
     reportDir match {
       case Some(reportDir) =>
         try {
@@ -78,12 +78,11 @@ class HomeController @Inject()(cc: MessagesControllerComponents, configuration: 
       case None =>
         InternalServerError(Json.toJson(JsObject(Map("Error" -> JsString(s"Something Terrible happened... we could not find the reports directory")))))
     }
-
   }
 
-  def reports(reportDir: String) = {
+  def reports(reportDir: String): JsObject = {
     val report = new ReportServices(reportsDir = reportDir)
-    val mostListingsByContacts = report.mostContactedListingByMonth().map(e => e._1.toString -> e._2)
+    val mostListingsByContacts = report.mostContactedListingByMonth().map(e => extractMonthAndYear(e._1)  -> e._2)
     val avgListingsPricePerSeller = report.averageListingPricePerSellerType
     val percentageDistroOfCarsByMake = report.percentageDistroOfCarsByMake
     val avgTopMostContactedListingByprice = report.averagePriceMostContactedListing()
@@ -122,5 +121,5 @@ class HomeController @Inject()(cc: MessagesControllerComponents, configuration: 
     }
   }
 
-  def extractMonthAndYear(date: LocalDate) = s"${date.getYear}-${date.getMonthValue}"
+  def extractMonthAndYear(date: LocalDate) = s"${date.getMonthValue}-${date.getYear}"
 }

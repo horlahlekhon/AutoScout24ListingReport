@@ -3,7 +3,6 @@
  * message to display.
  *@
 @import services.Listing
-@import java.time.Month
 @import java.time.LocalDate
 @(message: String, mostListingsByContacts: Map[LocalDate, Seq[(Listing, Int)]], avgListingsPricePerSeller: Map[String, Double], percentageDistroOfCarsByMake: Map[String, Int], avgTopMostContactedListing: Double, form: Form[FormData] )(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
@@ -12,7 +11,7 @@
  * argument is a `String` with the title of the page, the second
  * argument is an `Html` object containing the body of the page.
  *@
-@main("Welcome to Play") {
+@main("Welcome to AutoScout24") {
 
     @*
      * Get an `Html` object by calling the built-in Play welcome
